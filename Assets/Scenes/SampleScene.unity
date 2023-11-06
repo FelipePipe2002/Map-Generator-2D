@@ -213,7 +213,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 417024}
+        m_TargetAssemblyTypeName: SliderScript, Assembly-CSharp
+        m_MethodName: selectedtrue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &417024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -228,6 +240,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slider: {fileID: 417023}
   _sliderText: {fileID: 1779484700}
+  selected: 0
 --- !u!1 &23240078
 GameObject:
   m_ObjectHideFlags: 0
@@ -368,12 +381,15 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1727507257}
+  - {fileID: 392302045}
+  - {fileID: 757354781}
   m_Father: {fileID: 295868984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 460, y: 50}
+  m_AnchoredPosition: {x: 420, y: 100}
   m_SizeDelta: {x: 148.9345, y: 33.6885}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &156868952
@@ -398,7 +414,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
+    m_FontSize: 25
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -526,16 +542,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1221662790}
-  - {fileID: 2095607430}
-  - {fileID: 1326841421}
-  - {fileID: 1388358176}
   - {fileID: 1334133711}
   - {fileID: 1942728507}
   - {fileID: 156868951}
-  - {fileID: 1727507257}
-  - {fileID: 392302045}
-  - {fileID: 757354781}
   m_Father: {fileID: 519420032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -706,18 +715,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 392302044}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 949111160}
   - {fileID: 1949662575}
-  m_Father: {fileID: 295868984}
+  m_Father: {fileID: 156868951}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400, y: -30}
+  m_AnchoredPosition: {x: -70, y: -60}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &392302046
@@ -740,7 +749,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2079631657, guid: 7a9d85e1244c1704583bdfafe024998c, type: 3}
+  m_Sprite: {fileID: -1035685057, guid: 7a9d85e1244c1704583bdfafe024998c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1002,7 +1011,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 471829866}
+        m_TargetAssemblyTypeName: SliderScript, Assembly-CSharp
+        m_MethodName: selectedtrue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &471829866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1017,6 +1038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slider: {fileID: 471829865}
   _sliderText: {fileID: 433199113}
+  selected: 0
 --- !u!1 &499494473
 GameObject:
   m_ObjectHideFlags: 0
@@ -1812,18 +1834,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 757354780}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1312458740}
   - {fileID: 1772585994}
-  m_Father: {fileID: 295868984}
+  m_Father: {fileID: 156868951}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 500, y: -30}
+  m_AnchoredPosition: {x: 30, y: -60}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &757354782
@@ -1846,7 +1868,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1863074175, guid: 7a9d85e1244c1704583bdfafe024998c, type: 3}
+  m_Sprite: {fileID: -399047390, guid: 7a9d85e1244c1704583bdfafe024998c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2026,6 +2048,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slider: {fileID: 949111162}
   _sliderText: {fileID: 1949662576}
+  selected: 0
 --- !u!114 &949111162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2076,7 +2099,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 949111161}
+        m_TargetAssemblyTypeName: SliderScript, Assembly-CSharp
+        m_MethodName: selectedtrue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &964456892
 GameObject:
   m_ObjectHideFlags: 0
@@ -2123,9 +2158,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce411b0db33f985468580c905ceb737f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ancho: 50
-  alto: 50
-  size: 15
+  ancho: 100
+  alto: 100
+  worldsize: 15
+  biomesize: 15
   tilemap: {fileID: 964456896}
   tile:
   - {fileID: 11400000, guid: 607a5f947eea6c64697686528ac92e54, type: 2}
@@ -2200,17 +2236,51 @@ Tilemap:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 964456892}
   m_Enabled: 1
-  m_Tiles: {}
+  m_Tiles:
+  - first: {x: 523, y: 132, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
   m_AnimatedTiles: {}
-  m_TileAssetArray: []
-  m_TileSpriteArray: []
-  m_TileMatrixArray: []
-  m_TileColorArray: []
+  m_TileAssetArray:
+  - m_RefCount: 1
+    m_Data: {fileID: 11400000, guid: 8252cdf7d94a08645a22ddcd268f827c, type: 2}
+  m_TileSpriteArray:
+  - m_RefCount: 1
+    m_Data: {fileID: -1035685057, guid: 7a9d85e1244c1704583bdfafe024998c, type: 3}
+  m_TileMatrixArray:
+  - m_RefCount: 1
+    m_Data:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+  m_TileColorArray:
+  - m_RefCount: 1
+    m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0, y: 0, z: 1}
+  m_Size: {x: 524, y: 133, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
   m_TileOrientation: 0
   m_TileOrientationMatrix:
@@ -2565,18 +2635,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1221662789}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 471829864}
   - {fileID: 433199112}
-  m_Father: {fileID: 295868984}
+  m_Father: {fileID: 1942728507}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 200, y: 180}
+  m_AnchoredPosition: {x: -270, y: -60}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1221662791
@@ -2707,6 +2777,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slider: {fileID: 1312458742}
   _sliderText: {fileID: 1772585995}
+  selected: 0
 --- !u!114 &1312458742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2757,7 +2828,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1312458741}
+        m_TargetAssemblyTypeName: SliderScript, Assembly-CSharp
+        m_MethodName: selectedtrue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1326841420
 GameObject:
   m_ObjectHideFlags: 0
@@ -2783,18 +2866,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1326841420}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1921074557}
   - {fileID: 1432370022}
-  m_Father: {fileID: 295868984}
+  m_Father: {fileID: 1942728507}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400, y: 180}
+  m_AnchoredPosition: {x: -70, y: -60}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1326841422
@@ -2847,7 +2930,7 @@ GameObject:
   - component: {fileID: 1334133713}
   - component: {fileID: 1334133712}
   m_Layer: 0
-  m_Name: Text
+  m_Name: GenerarMundo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2860,7 +2943,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1334133710}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2869,7 +2952,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -414.61, y: -237.73363}
+  m_AnchoredPosition: {x: -356, y: -237.73363}
   m_SizeDelta: {x: 271.7739, y: 75.5327}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1334133712
@@ -3004,6 +3087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slider: {fileID: 1351906486}
   _sliderText: {fileID: 1096277277}
+  selected: 0
 --- !u!114 &1351906486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3054,7 +3138,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1351906485}
+        m_TargetAssemblyTypeName: SliderScript, Assembly-CSharp
+        m_MethodName: selectedtrue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1388358175
 GameObject:
   m_ObjectHideFlags: 0
@@ -3080,18 +3176,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388358175}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1351906484}
   - {fileID: 1096277276}
-  m_Father: {fileID: 295868984}
+  m_Father: {fileID: 1942728507}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 500, y: 180}
+  m_AnchoredPosition: {x: 30, y: -60}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1388358177
@@ -3143,6 +3239,7 @@ GameObject:
   - component: {fileID: 1406167980}
   - component: {fileID: 1406167979}
   - component: {fileID: 1406167981}
+  - component: {fileID: 1406167982}
   m_Layer: 0
   m_Name: Slider5
   m_TagString: Untagged
@@ -3200,7 +3297,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1406167981}
+        m_TargetAssemblyTypeName: SliderScript, Assembly-CSharp
+        m_MethodName: selectedtrue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!224 &1406167980
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3237,6 +3346,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slider: {fileID: 1406167979}
   _sliderText: {fileID: 1775549361}
+  selected: 0
+--- !u!61 &1406167982
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406167978}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 85, y: 20}
+  m_EdgeRadius: 0
 --- !u!1 &1408755107
 GameObject:
   m_ObjectHideFlags: 0
@@ -3568,16 +3723,16 @@ RectTransform:
   m_GameObject: {fileID: 1727507256}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1406167980}
   - {fileID: 1775549360}
-  m_Father: {fileID: 295868984}
+  m_Father: {fileID: 156868951}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: -30}
+  m_AnchoredPosition: {x: -170, y: -60}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1727507258
@@ -4167,7 +4322,19 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1921074559}
+        m_TargetAssemblyTypeName: SliderScript, Assembly-CSharp
+        m_MethodName: selectedtrue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1921074559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4182,6 +4349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slider: {fileID: 1921074558}
   _sliderText: {fileID: 1432370023}
+  selected: 0
 --- !u!1 &1942728506
 GameObject:
   m_ObjectHideFlags: 0
@@ -4211,12 +4379,16 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1221662790}
+  - {fileID: 2095607430}
+  - {fileID: 1326841421}
+  - {fileID: 1388358176}
   m_Father: {fileID: 295868984}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 460, y: 248.15576}
+  m_AnchoredPosition: {x: 420, y: 260}
   m_SizeDelta: {x: 148.9345, y: 33.6885}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1942728508
@@ -4241,7 +4413,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
+    m_FontSize: 25
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 0
@@ -4517,16 +4689,16 @@ RectTransform:
   m_GameObject: {fileID: 2095607429}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 417022}
   - {fileID: 1779484699}
-  m_Father: {fileID: 295868984}
+  m_Father: {fileID: 1942728507}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 300, y: 180}
+  m_AnchoredPosition: {x: -170, y: -60}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2095607431
