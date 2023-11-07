@@ -1,5 +1,8 @@
 using System;
-using Unity.VisualScripting;
+using TMPro;
+using Unity.Collections;
+using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -7,64 +10,104 @@ using Random = UnityEngine.Random;
 
 public class TilePlacement : MonoBehaviour
 {
-    public float ancho = 50f;
-    public float alto = 50f;
-    public float worldsize = 15f;
-    public float biomesize = 15f;
     public Tilemap tilemap;
-    public TileBase[] tile;
-
-    public Slider[] probabilities;
-
+    public Formulas formula;
     public GameObject camera;
+    public TMP_InputField[] wm;
+    public TileBase[] tile;
+    public Slider[] probabilities;
+    
+    private string[] wmold;
+    private float[] pbold;
+    private string fold;
 
-    private int amountofbiomes;
-    private Vector2[] points;
-    private int seed;
+    private int seedElevation,seedBiome;
+
     private void Start() {
-        resetProbabilities();
-
-        amountofbiomes= (int)(ancho *alto/70f);
-        points = new Vector2[amountofbiomes];
-        for (int i = 0; i < amountofbiomes; i++)
-        {
-            points[i]= new Vector2(Random.Range(0f,ancho),Random.Range(0f,alto));
-        }
-        GeneratePerlinTexture(ancho,alto,1f,worldsize,biomesize,Random.Range(0, 1000000),Random.Range(1000000, 2000000));
-        camera.transform.position = new Vector3(ancho/2,alto/2,camera.transform.position.z);
-    }
-
-    private void resetProbabilities(){
-        probabilities[0].maxValue = 30;
-        probabilities[0].value = 30;
-        probabilities[1].maxValue = 9;
-        probabilities[1].value = 9;
-        probabilities[2].maxValue = 45;
-        probabilities[2].value = 45;
-        probabilities[3].maxValue=16;
-        probabilities[3].value = 16;
-        probabilities[4].maxValue = 55;
-        probabilities[4].value = 55;
-        probabilities[5].maxValue = 30;
-        probabilities[5].value = 30;
-        probabilities[6].maxValue = 15;
-        probabilities[6].value = 15;
+        wmold = new string[wm.Length];
+        pbold = new float[probabilities.Length];
+        Reset();
+        GeneratePerlinTexture(int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[2].text),int.Parse(wm[3].text),Random.Range(0, 1000000),Random.Range(1000000, 2000000));
+        camera.transform.position = new Vector3(int.Parse(wm[0].text)/2,int.Parse(wm[1].text)/2,camera.transform.position.z);
     }
     private void Update() {
         fixvalues();
 
         if(Input.GetKeyDown(KeyCode.R)){
-            resetProbabilities();
+            Reset();
         }
 
         if(Input.GetKeyDown(KeyCode.G)){
-            for (int i = 0; i < amountofbiomes; i++)
-            {
-                points[i]= new Vector2(Random.Range(0f,ancho),Random.Range(0f,alto));
-            }
-            seed++;
-            GeneratePerlinTexture(ancho,alto,1f,worldsize,biomesize,Random.Range(0, 1000000),Random.Range(1000000, 2000000));
+            seedElevation = Random.Range(0, 1000000);
+            seedBiome = Random.Range(1000000, 2000000);
         }
+
+        if(settingschanged() || changedmap()|| Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(KeyCode.R)){
+
+            if(changedmap())
+                tilemap.ClearAllTiles();
+
+            GeneratePerlinTexture(int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[2].text),int.Parse(wm[3].text),seedElevation,seedBiome);
+
+        }
+        saveOldData();
+    }
+
+    private void Reset(){
+        wm[0].text = "100";
+        wm[1].text = "100";
+        wm[2].text = "15";
+        wm[3].text = "15";
+
+        probabilities[0].value = 30;
+        probabilities[1].value = 8;
+        probabilities[2].value = 32;
+        probabilities[3].value = 30;
+        probabilities[4].value = 55;
+        probabilities[5].value = 30;
+        probabilities[6].value = 20;
+        probabilities[7].value = 50;
+        probabilities[8].value = 5;
+    }
+
+    private bool settingschanged(){
+        bool changed = false;
+
+        for (int i = 0; i < probabilities.Length && !changed; i++)
+        {
+            changed = pbold[i] != probabilities[i].value;
+            
+        }
+
+        if(!changed)
+            changed = fold != formula.getFormula();
+
+        return changed;
+    }
+
+    private bool changedmap(){
+        bool changed = false;
+
+        for (int i = 0; i < wm.Length && !changed; i++)
+        {
+            changed = wmold[i] != wm[i].text;
+        }
+
+        return changed;
+    }
+
+    private void saveOldData(){
+        for (int i = 0; i < probabilities.Length; i++)
+        {
+            pbold[i] = probabilities[i].value;
+        }
+
+        for (int i = 0; i < wm.Length; i++)
+        {
+            wmold[i] = wm[i].text;
+        }
+
+        fold = formula.getFormula();
     }
 
     private void GeneratePerlinTexture(float ancho, float alto, float tilesize, float worldsize, float biomesize, int seedElevation, int seedBiome)
@@ -78,33 +121,33 @@ public class TilePlacement : MonoBehaviour
                 float xCoordB = Random.Range(0, 1) == 1 ? x / biomesize + seedBiome : x / biomesize - seedBiome;
                 float yCoordB = Random.Range(0, 1) == 1 ? y / biomesize + seedBiome : y / biomesize - seedBiome;
 
-                float perlinElevationValue = Mathf.PerlinNoise(xCoordE,yCoordE) +  0.5f * Mathf.PerlinNoise(2*xCoordE - ancho,2*yCoordE + alto);
-                float perlinBiomeValue = Mathf.PerlinNoise(xCoordB,yCoordB) + 0.5f * Mathf.PerlinNoise(2*xCoordB + ancho,2*yCoordB - alto);
+                float perlinElevationValue = Mathf.PerlinNoise(xCoordE,yCoordE) +  0.5f * Mathf.PerlinNoise(2*xCoordE - ancho,2*yCoordE + alto) + 0.25f * Mathf.PerlinNoise(4*xCoordE - 2*ancho,4*yCoordE + 2*alto);
+                float perlinBiomeValue = Mathf.PerlinNoise(xCoordB,yCoordB) + 0.5f * Mathf.PerlinNoise(2*xCoordB + ancho,2*yCoordB - alto) + 0.25f * Mathf.PerlinNoise(4*xCoordB + 2*ancho,4*yCoordB - 2*alto);
 
                 float dcx=2*x/ancho -1;
                 float dcy=2*y/alto -1;
 
-                float d = Mathf.Min(1f, ((float)Math.Pow(dcx,2) + (float)Math.Pow(dcy,2)) / Mathf.Sqrt(2));
                 Vector3Int cellPosition = tilemap.WorldToCell(new Vector3(x,y,0));
-                tilemap.SetTile(cellPosition,selectTile(perlinElevationValue*(1-d),perlinBiomeValue,d));
+                float LinearShaping = probabilities[7].value/100f;
+                tilemap.SetTile(cellPosition,selectTile((1-LinearShaping)*perlinElevationValue + LinearShaping * (1-formula.calcular(dcx,dcy,probabilities[8].value,probabilities[8].maxValue)) * 1.75f,perlinBiomeValue));
             }
         }
     }
 
 
-    private TileBase selectTile(float e, float b, float d){
+    private TileBase selectTile(float e, float b){
 
-        if(e < 1.5f * ((float)probabilities[0].value/100f)){ //agua
+        if(e < 1.75f * ((float)probabilities[0].value/100f)){ //agua
             return tile[0];
         }
         
-        if(e < 1.5f * ((float)(probabilities[0].value+probabilities[1].value)/100f)){ //playa
+        if(e < 1.75f * ((float)(probabilities[0].value+probabilities[1].value)/100)){ //playa
             return tile[1];
         }
 
-        if(e < 1.5f * ((float)(probabilities[0].value+probabilities[1].value + probabilities[2].value)/100f)){ //tierra
-            if(b < 1.5f * ((float)probabilities[4].value/100f)) return tile[3];
-            if(b < 1.5f * ((float)(probabilities[4].value + probabilities[5].value)/100f)) return tile[4];
+        if(e < 1.75f * ((float)(probabilities[0].value+probabilities[1].value + probabilities[2].value)/100f)){ //tierra
+            if(b < 1.75f * ((float)probabilities[4].value/100f)) return tile[3];
+            if(b < 1.75f * ((float)(probabilities[4].value + probabilities[5].value)/100f)) return tile[4];
             return tile[5];
         }
 
@@ -119,5 +162,15 @@ public class TilePlacement : MonoBehaviour
         probabilities[4].maxValue = 100-(probabilities[5].value + probabilities[6].value);
         probabilities[5].maxValue = 100-(probabilities[4].value + probabilities[6].value);
         probabilities[6].maxValue = 100-(probabilities[4].value + probabilities[5].value);
+
+        for (int i = 0; i < wm.Length; i++)
+        {
+            try{
+                int aux = int.Parse(wm[i].text);
+            } catch (FormatException)
+            {
+                wm[i].text = "1";
+            }
+        }
     }
 }
