@@ -14,9 +14,11 @@ public class Formulas : MonoBehaviour
         formula = lista.options[lista.value].text;
     }
 
-    public float calcular(float dcx,float dcy,float tamanio,float maxtamanio){
+    public float calcular(float dcx,float dcy,float tamanio,float maxtamanio, float perlinValue){
         switch (formula)
         {
+            case "No Effect":
+                return 1 - perlinValue/1.75f;
             case "Euclidean Square":
                 return Mathf.Min(1f, (Mathf.Pow(dcx,2) + Mathf.Pow(dcy,2)) / Mathf.Sqrt(tamanio/maxtamanio));
             case "Square Bump":
