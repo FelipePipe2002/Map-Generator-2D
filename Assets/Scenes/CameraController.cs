@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
 
         // Camera Zoom Out
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
-        this.GetComponent<Camera>().orthographicSize = Mathf.Clamp(this.GetComponent<Camera>().orthographicSize - scrollInput * zoomSpeed, 1f, 100f);
+        this.GetComponent<Camera>().orthographicSize = Mathf.Clamp(this.GetComponent<Camera>().orthographicSize - scrollInput * zoomSpeed, 1f, 1000f);
     }
 }
 
