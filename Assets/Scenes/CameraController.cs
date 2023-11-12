@@ -7,6 +7,13 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKey(KeyCode.LeftShift)){
+            moveSpeed = 200.0f;
+            zoomSpeed = 200.0f;
+        } else {
+            moveSpeed = 50.0f;
+            zoomSpeed = 50.0f;
+        }
         // Camera Movement
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
