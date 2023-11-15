@@ -14,17 +14,19 @@ public class TilePlacement : MonoBehaviour
     public Toggle ds;
     public Camera camara;
     public Text Loading;
+    public CityTile ct;
     public TMP_InputField[] wm;
     public Tile[] tile,objetos;
     public Slider[] pbt,pbo,pbd;
 
     private int seedElevation,seedTemperature,seedPrecipitation,iterationsx,iterationsy,it,itx,ity;
     private float chunksize = 30f;
-    private bool canceled;
+    private bool canceled,hide;
  
     private void Start() {
         Reset();
         canceled = false;
+        hide = false;
         seedElevation = Random.Range(0, 100000);
         seedTemperature = Random.Range(100000, 200000);
         seedPrecipitation = Random.Range(200000, 300000);
@@ -35,84 +37,112 @@ public class TilePlacement : MonoBehaviour
         itx=0;
         ity=0;
 
+        for (int i = 0; i < tile.Length; i++)
+        {
+            tile[i].color = new Color(255f,255f,255f);
+        }
+
         camara.transform.position = new Vector3(float.Parse(wm[0].text)/2,float.Parse(wm[1].text)/2,camara.transform.position.z);
     }
     //create generate points
     private void Update() {
-        fixvalues();
-        
-        if(Input.GetKeyDown(KeyCode.R) && (it==4 || canceled)){
-            Reset();
-        }
-
-        if(Input.GetKeyDown(KeyCode.C)){
-            canceled = true;
-        }
-
-        if(Input.GetKeyDown(KeyCode.G)){
-            seedElevation = Random.Range(0, 100000);
-            seedTemperature = Random.Range(100000, 200000);
-            seedPrecipitation = Random.Range(200000, 300000);
-            iterationsx = Mathf.CeilToInt(float.Parse(wm[0].text)/chunksize);
-            iterationsy = Mathf.CeilToInt(float.Parse(wm[1].text)/chunksize);
-            it=0;
-            itx=0;
-            ity=0;
-            canceled = false;
-            camara.transform.position = new Vector3(float.Parse(wm[0].text)/2,float.Parse(wm[1].text)/2,camara.transform.position.z);
-        }
-
-        float progress = (float)(ity * iterationsx + itx) / (iterationsx * iterationsy) * 100f;
-        if(it == 0)
-            Loading.text = "Generating World: " + Mathf.RoundToInt(progress) + "%";
-        else if(it == 1)
-            Loading.text = "Generating World: 100%\nGenerating Biomes: " + Mathf.RoundToInt(progress) + "%";
-        else if(it == 2)
-            Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: " + Mathf.RoundToInt(progress) + "%";
-        else if(it == 3)
-            Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: 100%\nGenerating Structures: " + Mathf.RoundToInt(progress) + "%";
-        else {
-            Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: 100%\nGenerating Structures: 100%\nGenerating Complete!!";
-        }
-
-
-        if((ity < iterationsy) && !canceled && it<4){
-            if(itx == 0 && ity == 0 && it==0){
-                objectmap.ClearAllTiles();
-                tilemap.ClearAllTiles();
-            }
+        if(!ct.MostrandoCiudad()){
+            fixvalues();
             
-            InteractuarConModificadores(false);
-            switch (it)
-            {
-                case 0:
-                    GenerateTerrain(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[2].text),seedElevation);
-                    break;
-                case 1:
-                    GenerateBiomes(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[3].text),seedTemperature,seedPrecipitation);
-                    break;
-                case 2:
-                    GenerateRivers(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[3].text),seedTemperature);                    
-                    break;
-                case 3:
-                    GenerateObjects(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),1f);
-                    break;
-            }
-
-            if (itx < iterationsx - 1) {
-                itx++;
+            if(camara.GetComponent<Camera>().orthographicSize >= 60f){
+                objectmap.GetComponent<TilemapRenderer>().enabled = false;
             } else {
-                itx = 0;
-                ity++;
+                if(!hide) objectmap.GetComponent<TilemapRenderer>().enabled = true;
             }
-        } else {
-            InteractuarConModificadores(true);
-        }
 
-        if(ity == iterationsx && itx == 0 && it<4){
-            it++;
-            itx = 0;
-            ity = 0;
+            if(Input.GetKeyDown(KeyCode.R) && (it==4 || canceled)){
+                Reset();
+            }
+
+            if(Input.GetKeyDown(KeyCode.C)){
+                canceled = true;
+            }
+
+            if(Input.GetKeyDown(KeyCode.H) && !ct.MostrandoCiudad()){
+                hide = !hide;
+                if(!hide){
+                    MostrarMapas(true);
+                } else {
+                    MostrarMapas(false);
+                }
+            }
+
+            if(Input.GetKeyDown(KeyCode.G)){
+                seedElevation = Random.Range(0, 100000);
+                seedTemperature = Random.Range(100000, 200000);
+                seedPrecipitation = Random.Range(200000, 300000);
+                iterationsx = Mathf.CeilToInt(float.Parse(wm[0].text)/chunksize);
+                iterationsy = Mathf.CeilToInt(float.Parse(wm[1].text)/chunksize);
+                it=0;
+                itx=0;
+                ity=0;
+                canceled = false;
+                camara.transform.position = new Vector3(float.Parse(wm[0].text)/2,float.Parse(wm[1].text)/2,camara.transform.position.z);
+                for (int i = 0; i < tile.Length; i++)
+                {
+                    tile[i].color = new Color(255f,255f,255f);
+                }
+            }
+
+            float progress = (float)(ity * iterationsx + itx) / (iterationsx * iterationsy) * 100f;
+            if(it == 0){
+                Loading.enabled = true;
+                Loading.text = "Generating World: " + Mathf.RoundToInt(progress) + "%";
+            }
+            else if(it == 1)
+                Loading.text = "Generating World: 100%\nGenerating Biomes: " + Mathf.RoundToInt(progress) + "%";
+            else if(it == 2)
+                Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: " + Mathf.RoundToInt(progress) + "%";
+            else if(it == 3)
+                Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: 100%\nGenerating Structures: " + Mathf.RoundToInt(progress) + "%";
+            else {
+                Loading.enabled = false;
+            }
+
+
+            if((ity < iterationsy) && !canceled && it<4){
+                if(itx == 0 && ity == 0 && it==0){
+                    objectmap.ClearAllTiles();
+                    tilemap.ClearAllTiles();
+                }
+                
+                InteractuarConModificadores(false);
+                switch (it)
+                {
+                    case 0:
+                        GenerateTerrain(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[2].text),seedElevation);
+                        break;
+                    case 1:
+                        GenerateBiomes(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[3].text),seedTemperature,seedPrecipitation);
+                        break;
+                    case 2:
+                        GenerateRivers(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),int.Parse(wm[0].text),int.Parse(wm[1].text),1f,int.Parse(wm[3].text),seedTemperature);                    
+                        break;
+                    case 3:
+                        GenerateObjects(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,float.Parse(wm[0].text)),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,float.Parse(wm[1].text)),1f);
+                        break;
+                }
+
+                if (itx < iterationsx - 1) {
+                    itx++;
+                } else {
+                    itx = 0;
+                    ity++;
+                }
+            } else {
+                InteractuarConModificadores(true);
+            }
+
+            if(ity == iterationsx && itx == 0 && it<4){
+                it++;
+                itx = 0;
+                ity = 0;
+            }
         }
     }
 
@@ -227,7 +257,7 @@ public class TilePlacement : MonoBehaviour
         }
     }
 
-    private Tile selectTileTerrain(float e){
+    public Tile selectTileTerrain(float e){
 
         if(e < 1.75f * ((float)pbt[0].value/100f)){ //agua
             return tile[0];
@@ -365,5 +395,42 @@ public class TilePlacement : MonoBehaviour
         pbt[1].maxValue = 100-(pbt[0].value + pbt[2].value + pbt[3].value);
         pbt[2].maxValue = 100-(pbt[0].value + pbt[1].value + pbt[3].value);
         pbt[3].maxValue = 100-(pbt[0].value + pbt[1].value + pbt[2].value);
+    }
+
+    public void MostrarMapas(bool mostrar){
+        tilemap.GetComponent<TilemapRenderer>().enabled = mostrar;
+        objectmap.GetComponent<TilemapRenderer>().enabled = mostrar;
+    }
+
+    public bool clickOnCiudad(Vector3 pos){
+        Vector3Int cellPosition = objectmap.WorldToCell(pos);
+        TileBase aux = objectmap.GetTile(cellPosition);
+        return aux == objetos[0];
+    }
+    private Vector3 guardasposcamara;
+    private float camerasize;
+    public void guardarCamaraPos(){
+        guardasposcamara = camara.transform.position;
+        camerasize = camara.GetComponent<Camera>().orthographicSize;
+        camara.GetComponent<Camera>().orthographicSize = 50f;
+    }
+
+    public void restaurarCamaraPos(){
+        camara.transform.position = guardasposcamara;
+        camara.GetComponent<Camera>().orthographicSize = camerasize;
+    }
+
+    public int getSeedElevation(){
+        return seedElevation;
+    }
+
+    public Vector3 getMapPos(Vector3 pos){
+        return tilemap.WorldToCell(pos);
+    }
+
+    public TileBase getTilePos(Vector3 pos){
+        Vector3Int cellPosition = tilemap.WorldToCell(pos);
+        TileBase aux = tilemap.GetTile(cellPosition);
+        return aux;
     }
 }
