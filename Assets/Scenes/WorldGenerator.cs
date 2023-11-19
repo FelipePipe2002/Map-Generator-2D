@@ -100,9 +100,6 @@ public class TilePlacement : MonoBehaviour
                 Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: " + Mathf.RoundToInt(progress) + "%";
             else if(it == 3)
                 Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: 100%\nGenerating Structures: " + Mathf.RoundToInt(progress) + "%";
-            else {
-                Loading.enabled = false;
-            }
 
 
             if((ity < iterationsy) && !canceled && it<4){

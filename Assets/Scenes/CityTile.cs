@@ -16,7 +16,6 @@ public class CityTile : MonoBehaviour
     private float chunksize = 50f;
     private TileBase tileworld;
     private Vector3 citypos;
-    private Vector3Int highestpoint;
     private List<Vector3Int> area,limitearea;
     private int mapsize=50;
     private void Start() {
@@ -54,7 +53,6 @@ public class CityTile : MonoBehaviour
                 itx=0;
                 ity=0;
                 it=0;
-                highestpointvalue = 0;
                 area = new List<Vector3Int>();
                 limitearea = new List<Vector3Int>();
             }
@@ -73,11 +71,11 @@ public class CityTile : MonoBehaviour
                 switch (it)
                 {
                     case 0:
-                        GenerateTerrain(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,mapsize),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,mapsize),1f,12f,(int)Mathf.Round(citypos.x * 123f + citypos.y * 321f));
+                        GenerateTerrain(itx*chunksize,Mathf.Min((itx+1)*chunksize-1f,mapsize),ity*chunksize,Mathf.Min((ity+1)*chunksize-1f,mapsize),1f,13f,(int)Mathf.Round(citypos.x * 123f + citypos.y * 321f));
                         break;
                     case 1:
-                        GenerateCityArea(highestpoint.x,highestpoint.y,12f,(int)Mathf.Round(citypos.x * 123f + citypos.y * 321f));
-                        citymap.SetTile(highestpoint,cityobjects[0]);
+                        GenerateCityArea(mapsize/2,mapsize/2,13f,(int)Mathf.Round(citypos.x * 123f + citypos.y * 321f));
+                        citymap.SetTile(new Vector3Int(mapsize/2,mapsize/2,0),cityobjects[0]);
                         GenerateWalls();
                         break;
                     case 2:
@@ -98,8 +96,6 @@ public class CityTile : MonoBehaviour
                 ity = 0;
             }
     }
-
-    private float highestpointvalue = 0;
     public void GenerateTerrain(float xi, float xf, float yi,  float yf, float tilesize, float worldsize, int seedElevation)
     {
         for (float x = xi; x <= xf; x += tilesize)
@@ -111,13 +107,6 @@ public class CityTile : MonoBehaviour
 
                 float perlinElevationValue = Mathf.Clamp(Mathf.PerlinNoise(xCoordE,yCoordE),0f,1f);
                 Vector3Int cellPosition = terrainmap.WorldToCell(new Vector3(x,y,0));
-
-
-                if(perlinElevationValue>highestpointvalue && 15<x && x<35 && 15<y && y<35){
-                    highestpointvalue = perlinElevationValue;
-                    highestpoint = cellPosition;
-
-                }
                 
                 float aux = (255f - (50*Mathf.Clamp(perlinElevationValue-0.3f,0,1f)))/255f;
                 Tile selected = null;
@@ -148,7 +137,7 @@ public class CityTile : MonoBehaviour
         Vector3Int aux = new Vector3Int(x,y,0);
 
         if(IsValidPosition(x,y) && !area.Contains(aux) && !limitearea.Contains(aux)){
-            float distance = Vector3Int.Distance(aux, highestpoint);
+            float distance = Vector3Int.Distance(aux, new Vector3Int(mapsize/2,mapsize/2,0));
             Backtraking(aux,x,y,-1,0,distance,w,s);
             Backtraking(aux,x,y,1,0,distance,w,s);
             Backtraking(aux,x,y,0,-1,distance,w,s);
@@ -163,7 +152,7 @@ public class CityTile : MonoBehaviour
     
     private void Backtraking(Vector3Int pos,int x,int y,int h,int v,float distance, float w, int s){
         Vector3Int cellPosition = citymap.WorldToCell(new Vector3(x,y,0));
-        if(IsValidPosition(x+h,y+v) && Mathf.Clamp(Mathf.PerlinNoise(calcCoord(x+h,w,s),calcCoord(y+v,w,s)),0f,1f) > highestpointvalue-.4f && distance<10){
+        if(IsValidPosition(x+h,y+v) && Mathf.Clamp(Mathf.PerlinNoise(calcCoord(x+h,w,s),calcCoord(y+v,w,s)),0f,1f) > .2f && distance<15){
             citymap.SetTile(cellPosition,cityobjects[2]);
             area.Add(pos);
             GenerateCityArea(x+h, y+v, w, s);
