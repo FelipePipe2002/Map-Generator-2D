@@ -5,15 +5,17 @@ using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 using System.IO;
 using TMPro;
+using System;
 
 public class TilemapToPng : MonoBehaviour
 {
 
-    Tilemap tm;
+    public Tilemap tm,bm,rm;
     public TMP_InputField[] wm;
-    public Texture2D Img;
     public Text Loading;
+    public Sprite waterSprite,grassSprite;
 
+    private Texture2D Img;
     private int iterationsx,iterationsy,itx,ity;
     private float width, height;
     private bool canceled,exported,generar;
@@ -49,7 +51,7 @@ public class TilemapToPng : MonoBehaviour
 
         float progress = (float)(ity * iterationsx + itx) / (iterationsx * iterationsy) * 100f;
 
-        if(progress <= 100) {
+        if(progress <= 100 && generar == true) {
             Loading.enabled = true;
             Loading.text = "Exporting: " + Mathf.RoundToInt(progress) + "%";
         }
@@ -83,12 +85,22 @@ public class TilemapToPng : MonoBehaviour
                 Sprite sprite = tm.GetSprite(spritepos);
                 if (sprite != null)
                 {
+                    if(sprite != waterSprite){
+                        Sprite aux = rm.GetSprite(spritepos);
+                        if(aux == null && sprite == grassSprite){
+                            aux = bm.GetSprite(spritepos);
+                        }
+
+                        if(aux != null)
+                            sprite = aux;
+                    }
+
                     if (!spriteCache.TryGetValue(sprite, out Color[] spriteTexture))
                     {
-                        // If not, load the sprite and store it in the cache
                         spriteTexture = GetCurrentSprite(sprite);
                         spriteCache.Add(sprite, spriteTexture);
                     }
+
                     Img.SetPixels(x * (int)width, y * (int)height, (int)width, (int)height, spriteTexture);
                 }
             }
@@ -99,7 +111,6 @@ public class TilemapToPng : MonoBehaviour
     {
         if (sprite == null)
         {
-            Debug.LogError("Sprite is null.");
             return new Color[0];
         }
 

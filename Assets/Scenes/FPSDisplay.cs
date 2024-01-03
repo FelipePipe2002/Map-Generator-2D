@@ -13,6 +13,10 @@ public class FPSDisplay : MonoBehaviour
     }
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.F)){
+            maxfps = float.MinValue;
+            minfps = float.MaxValue;
+        }
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
         float fps = 1.0f / deltaTime;
         if(fps > maxfps)

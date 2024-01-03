@@ -1,9 +1,27 @@
 # Map-Generator-2D
 
-![Alt text](image.png)
+![Alt text](image-1.png)
 
-Este proyecto nació con el propósito de explorar la generación de terrenos 2D en Unity mediante la utilización de Perlin Noise. El generador actualmente produce paisajes generados procedimentalmente, 
-y en el futuro, se planea incorporar características adicionales, como la generación de árboles con variaciones basadas en biomas y la creación de estructuras empleando técnicas como el algoritmo de Wave Collapse. 
+Este proyecto nació con el propósito de explorar la generación de terrenos 2D en Unity mediante la utilización de Perlin Noise y otros metodos de generacion.
+
+### Cambios al 19 de noviembre de 2023
+
+- Se ha modificado la interfaz. Ahora, en lugar de tener todas las configuraciones en una sola pestaña, se han dividido en distintas categorías para una mejor visualización (Generación, Mundo, Terreno, Biomas, Estructuras, Filtros y Exportar).
+    - **Generación:**
+        - En esta categoría se encuentran todas las configuraciones relacionadas con la generación, como la profundidad, la generación instantánea (generar todo de una vez, puede causar caídas de frames), o por "chunks", etc.
+    - **Mundo:** Todo lo relacionado con el tamaño del mapa y la forma del terreno.
+    - **Terreno:** En función de la altura que se va a generar, agua, arena, tierra o piedra. Probablemente las categorías Mundo y Terreno se fusionen.\
+        ![Vista previa](image-3.png)
+    - **Biomas:** En esta categoría se controlará todo lo relacionado con los biomas. También se permite, a través de una matriz, modificar la aparición de cada bioma en función de la temperatura y la precipitación en cada lugar.\
+        ![Vista previa](image-4.png)
+    - **Estructuras:** Como su nombre indica, contendrá todas las configuraciones relacionadas con las estructuras.
+    - **Filtros:** Aún no implementado.
+    - **Exportar:** Aún no implementado.
+
+- Se han corregido varios errores.
+- Se ha pospuesto la implementación de la generación de ciudades hasta completar la generación de terrenos.
+
+### **Cambios 2023-11-19**
 
 - Se corrigió el problema de la profundidad.
     - Cambio en la generación del mapa:

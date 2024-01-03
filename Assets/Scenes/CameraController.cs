@@ -4,7 +4,10 @@ public class CameraController : MonoBehaviour
 {
     public float moveSpeed = 50.0f; // Adjust the camera movement speed
     public float zoomSpeed = 50.0f; // Adjust the camera zoom speed
-
+    private Camera cameraComp;
+    private void Start() {
+        cameraComp = this.GetComponent<Camera>();
+    }
     void Update()
     {
         if(Input.GetKey(KeyCode.LeftShift)){
@@ -23,7 +26,7 @@ public class CameraController : MonoBehaviour
 
         // Camera Zoom Out
         float scrollInput = Input.GetAxis("Mouse ScrollWheel");
-        this.GetComponent<Camera>().orthographicSize = Mathf.Clamp(Mathf.Round(this.GetComponent<Camera>().orthographicSize - scrollInput * zoomSpeed), 1f, 1000f);
+        cameraComp.orthographicSize = Mathf.Clamp(Mathf.Round(cameraComp.orthographicSize - scrollInput * zoomSpeed), 1f, 1000f);
     }
 }
 

@@ -9,24 +9,29 @@ using Random = UnityEngine.Random;
 
 public class TilePlacement : MonoBehaviour
 {
-    public Tilemap tilemap,objectmap;
+    public Tilemap terrainmap,biomemap,riversmap,objectmap;
     public Formulas formula;
     public Toggle ds;
     public Camera camara;
     public Text Loading;
-    public CityTile ct;
     public TMP_InputField[] wm;
     public Tile[] tile,objetos;
     public Slider[] pbt,pbo,pbd;
+    public BiomesDisplay bd;
+
+    //cursor
+    public Texture2D LoadingTexture;
+    public CursorMode cursorMode = CursorMode.Auto;
 
     private int seedElevation,seedTemperature,seedPrecipitation,iterationsx,iterationsy,it,itx,ity;
     private float chunksize = 30f;
-    private bool canceled,hide;
- 
+    private bool canceled,hide,generating;
+    private TilemapRenderer tmrObjectMap;
     private void Start() {
         Reset();
         canceled = false;
         hide = false;
+        generating = true;
         seedElevation = Random.Range(0, 100000);
         seedTemperature = Random.Range(100000, 200000);
         seedPrecipitation = Random.Range(200000, 300000);
@@ -36,6 +41,7 @@ public class TilePlacement : MonoBehaviour
         it=0;
         itx=0;
         ity=0;
+        tmrObjectMap = objectmap.GetComponent<TilemapRenderer>();
 
         for (int i = 0; i < tile.Length; i++)
         {
@@ -46,49 +52,51 @@ public class TilePlacement : MonoBehaviour
     }
     //create generate points
     private void Update() {
-        if(!ct.MostrandoCiudad()){
-            fixvalues();
-            
-            if(camara.GetComponent<Camera>().orthographicSize >= 60f){
-                objectmap.GetComponent<TilemapRenderer>().enabled = false;
+        fixvalues();
+        if(camara.orthographicSize >= 60f){
+            tmrObjectMap.enabled = false;
+        } else {
+            if(!hide) tmrObjectMap.enabled = true;
+        }
+
+        if(Input.GetKeyDown(KeyCode.R) && (it==4 || canceled)){
+            Reset();
+        }
+
+        if(Input.GetKeyDown(KeyCode.C)){
+            canceled = true;
+            generating = false;
+            Interactuable(true);
+        }
+
+        if(Input.GetKeyDown(KeyCode.H)){
+            hide = !hide;
+            if(!hide){
+                MostrarMapas(true);
             } else {
-                if(!hide) objectmap.GetComponent<TilemapRenderer>().enabled = true;
+                MostrarMapas(false);
             }
+        }
 
-            if(Input.GetKeyDown(KeyCode.R) && (it==4 || canceled)){
-                Reset();
+        if(Input.GetKeyDown(KeyCode.G)){
+            seedElevation = Random.Range(0, 100000);
+            seedTemperature = Random.Range(100000, 200000);
+            seedPrecipitation = Random.Range(200000, 300000);
+            iterationsx = Mathf.CeilToInt(float.Parse(wm[0].text)/chunksize);
+            iterationsy = Mathf.CeilToInt(float.Parse(wm[1].text)/chunksize);
+            it=0;
+            itx=0;
+            ity=0;
+            canceled = false;
+            generating = true;
+            camara.transform.position = new Vector3(float.Parse(wm[0].text)/2,float.Parse(wm[1].text)/2,camara.transform.position.z);
+            for (int i = 0; i < tile.Length; i++)
+            {
+                tile[i].color = new Color(255f,255f,255f);
             }
+        }
 
-            if(Input.GetKeyDown(KeyCode.C)){
-                canceled = true;
-            }
-
-            if(Input.GetKeyDown(KeyCode.H) && !ct.MostrandoCiudad()){
-                hide = !hide;
-                if(!hide){
-                    MostrarMapas(true);
-                } else {
-                    MostrarMapas(false);
-                }
-            }
-
-            if(Input.GetKeyDown(KeyCode.G)){
-                seedElevation = Random.Range(0, 100000);
-                seedTemperature = Random.Range(100000, 200000);
-                seedPrecipitation = Random.Range(200000, 300000);
-                iterationsx = Mathf.CeilToInt(float.Parse(wm[0].text)/chunksize);
-                iterationsy = Mathf.CeilToInt(float.Parse(wm[1].text)/chunksize);
-                it=0;
-                itx=0;
-                ity=0;
-                canceled = false;
-                camara.transform.position = new Vector3(float.Parse(wm[0].text)/2,float.Parse(wm[1].text)/2,camara.transform.position.z);
-                for (int i = 0; i < tile.Length; i++)
-                {
-                    tile[i].color = new Color(255f,255f,255f);
-                }
-            }
-
+        if(generating){
             float progress = (float)(ity * iterationsx + itx) / (iterationsx * iterationsy) * 100f;
             if(it == 0){
                 Loading.enabled = true;
@@ -101,14 +109,15 @@ public class TilePlacement : MonoBehaviour
             else if(it == 3)
                 Loading.text = "Generating World: 100%\nGenerating Biomes: 100%\nGenerating Rivers: 100%\nGenerating Structures: " + Mathf.RoundToInt(progress) + "%";
 
-
             if((ity < iterationsy) && !canceled && it<4){
                 if(itx == 0 && ity == 0 && it==0){
                     objectmap.ClearAllTiles();
-                    tilemap.ClearAllTiles();
+                    terrainmap.ClearAllTiles();
+                    biomemap.ClearAllTiles();
+                    riversmap.ClearAllTiles();
                 }
                 
-                InteractuarConModificadores(false);
+                Interactuable(false);
                 switch (it)
                 {
                     case 0:
@@ -132,7 +141,9 @@ public class TilePlacement : MonoBehaviour
                     ity++;
                 }
             } else {
-                InteractuarConModificadores(true);
+                Interactuable(true);
+                generating = false;
+                Debug.Log("Termine");
             }
 
             if(ity == iterationsx && itx == 0 && it<4){
@@ -141,6 +152,7 @@ public class TilePlacement : MonoBehaviour
                 ity = 0;
             }
         }
+
     }
 
     private void GenerateTerrain(float xi, float xf, float yi,  float yf, float ancho, float alto, float tilesize, float worldsize, int seedElevation)
@@ -152,24 +164,24 @@ public class TilePlacement : MonoBehaviour
                 float xCoordE = x / worldsize + seedElevation;
                 float yCoordE = y / worldsize + seedElevation;
 
-                float perlinElevationValue = CalcNoise(xCoordE,yCoordE,4);
+                float perlinElevationValue = CalcNoise(xCoordE,yCoordE,int.Parse(wm[4].text));
 
                 float dcx=2*x/ancho -1;
                 float dcy=2*y/alto -1;
 
-                Vector3Int cellPosition = tilemap.WorldToCell(new Vector3(x,y,0));
+                Vector3Int cellPosition = terrainmap.WorldToCell(new Vector3(x,y,0));
                 float LinearShaping = pbd[0].value/100f;
                 
-                perlinElevationValue = (1-LinearShaping)*perlinElevationValue + LinearShaping * (1-formula.calcular(dcx,dcy,pbd[1].value,pbd[1].maxValue,perlinElevationValue)) * 1.75f;
+                perlinElevationValue = (1-LinearShaping)*perlinElevationValue + LinearShaping * (1-formula.calcular(dcx,dcy,pbd[1].value,pbd[1].maxValue,perlinElevationValue));
                 
                 Tile selected = selectTileTerrain(perlinElevationValue);
                 
-                if(ds.isOn && perlinElevationValue < 1.75f * ((float)pbt[0].value/100f))
+                if(ds.isOn && perlinElevationValue <((float)pbt[0].value/100f))
                     selected.color = depth(perlinElevationValue);
                 else
                     selected.color = Color.white;
 
-                tilemap.SetTile(cellPosition,selected);
+                terrainmap.SetTile(cellPosition,selected);
             }
         }
     }
@@ -180,8 +192,8 @@ public class TilePlacement : MonoBehaviour
         {
             for (float y = yi; y <= yf; y += tilesize)
             {   
-                Vector3Int cellPosition = tilemap.WorldToCell(new Vector3(x,y,0));
-                TileBase aux = tilemap.GetTile(cellPosition);
+                Vector3Int cellPosition = terrainmap.WorldToCell(new Vector3(x,y,0));
+                TileBase aux = terrainmap.GetTile(cellPosition);
                 if(aux == tile[3]){
                     float xCoordT = x / biomesize + seedTemperatura;
                     float yCoordT = y / biomesize - seedTemperatura;
@@ -189,11 +201,10 @@ public class TilePlacement : MonoBehaviour
                     float xCoordP = x / biomesize - seedPrecipitation;
                     float yCoordP = y / biomesize + seedPrecipitation;
 
-                    float perlinTemperatureValue = CalcNoise(xCoordT,yCoordT,2);
-                    float perlinPrecipitationValue = CalcNoise(xCoordP,yCoordP,2);
+                    float perlinTemperatureValue = CalcNoise(xCoordT,yCoordT,int.Parse(wm[5].text));
+                    float perlinPrecipitationValue = CalcNoise(xCoordP,yCoordP,int.Parse(wm[5].text));
 
-                    Tile selected = selectTileBiome(perlinTemperatureValue,perlinPrecipitationValue);
-                    tilemap.SetTile(cellPosition,selected);
+                    biomemap.SetTile(cellPosition,bd.getBiome(perlinTemperatureValue,perlinPrecipitationValue));
                 }
             }
         }
@@ -205,19 +216,19 @@ public class TilePlacement : MonoBehaviour
         {
             for (float y = yi; y <= yf; y += tilesize)
             {   
-                Vector3Int cellPosition = tilemap.WorldToCell(new Vector3(x,y,0));
-                TileBase aux = tilemap.GetTile(cellPosition);
+                Vector3Int cellPosition = terrainmap.WorldToCell(new Vector3(x,y,0));
+                TileBase aux = terrainmap.GetTile(cellPosition);
                 
-                if(aux != tile[0]){
+                if(aux != tile[0] && aux != tile[2]){
                     float xCoordT = x / biomesize + seedTemperatura;
                     float yCoordT = y / biomesize - seedTemperatura;
 
                     float t = CalcNoise(xCoordT,yCoordT,2);
-                    float edge1 = 1.75f/3f;
+                    float edge1 = 1.75f/3.75f;
 
-                    if(edge1<t && t<edge1+0.05f){
+                    if(edge1<t && t<edge1+0.045f){
                         tile[0].color = new Color(255f,255f,255f);
-                        tilemap.SetTile(cellPosition,tile[0]);
+                        riversmap.SetTile(cellPosition,tile[0]);
                     }
                 }
             }
@@ -230,25 +241,27 @@ public class TilePlacement : MonoBehaviour
         {
             for (float y = yi; y <= yf; y += tilesize)
             {   
-                Vector3Int cellPosition = tilemap.WorldToCell(new Vector3(x,y,0));
-                TileBase aux = tilemap.GetTile(cellPosition);
-
-                bool isAuxInSubset = false;
-                for (int i = 4; i <= 10; i++) {
-                    if (tile[i] == aux) {
-                        isAuxInSubset = true;
-                        break;
+                Vector3Int cellPosition = biomemap.WorldToCell(new Vector3(x,y,0));
+                TileBase auxB = biomemap.GetTile(cellPosition);
+                TileBase auxR = riversmap.GetTile(cellPosition);
+                if(auxR != tile[0]){
+                    bool isAuxInSubset = false;
+                    for (int i = 4; i <= 10; i++) {
+                        if (tile[i] == auxB) {
+                            isAuxInSubset = true;
+                            break;
+                        }
                     }
-                }
 
-                if(isAuxInSubset){
-                    float xCoordO = x / 1.5f + seedElevation;
-                    float yCoordo = y / 1.5f + seedElevation;
+                    if(isAuxInSubset){
+                        float xCoordO = x / 1.5f + seedElevation;
+                        float yCoordo = y / 1.5f + seedElevation;
 
-                    float perlinObjectValue = Mathf.PerlinNoise(xCoordO,yCoordo);
-                    TileBase selected = selectObject(perlinObjectValue, aux);
+                        float perlinObjectValue = Mathf.PerlinNoise(xCoordO,yCoordo);
+                        TileBase selected = selectObject(perlinObjectValue, auxB);
 
-                    objectmap.SetTile(cellPosition,selected);
+                        objectmap.SetTile(cellPosition,selected);
+                    }
                 }
             }
         }
@@ -256,47 +269,15 @@ public class TilePlacement : MonoBehaviour
 
     public Tile selectTileTerrain(float e){
 
-        if(e < 1.75f * ((float)pbt[0].value/100f)){ //agua
+        if(e < (float)pbt[0].value/100f){ //agua
             return tile[0];
-        } else if(e < 1.75f * ((float)(pbt[0].value+pbt[1].value)/100)){ //playa
+        } else if(e < (float)(pbt[0].value+pbt[1].value)/100){ //playa
             return tile[1];
-        } else if(e < 1.75f * ((float)(pbt[0].value+pbt[1].value + pbt[2].value)/100f)){ //tierra
+        } else if(e < (float)(pbt[0].value+pbt[1].value + pbt[2].value)/100f){ //tierra
             return tile[3];
         }
 
         return tile[2]; //montaña
-    }
-
-    private Tile selectTileBiome(float t,float p){
-        if (t< 0.30f){
-            return tile[9]; //snow
-        } else if (t<0.6f){
-            if(p<.65f){
-                return tile[4]; //plains
-            } else {
-                return tile[5]; //taiga
-            }
-        } else if(t<.75){
-            if(p<0.8f){
-                return tile[4]; //plains
-            } else {
-                return tile[6]; //dark forest
-            }
-        }else if(t<1f){
-            if(p<0.65f){
-                return tile[7]; //savanna
-            } else if(p<.85f){
-                return tile[6]; //dark forest
-            } else{
-                return tile[8]; //jungle
-            }
-        }else {
-            if(p<1.05f){
-                return tile[10]; //desert
-            } else {
-                return tile[8]; //jungle
-            }
-        }
     }
 
     private TileBase selectObject(float o, TileBase b){
@@ -325,7 +306,7 @@ public class TilePlacement : MonoBehaviour
     private Color depth(float e){
         float perlinvalue = Mathf.Round(e*100f)/100f;
 
-        float color = (100f + 155f*(perlinvalue/(1.75f * ((float)pbt[0].value/100f))))/255f;
+        float color = (130f + 125f*(perlinvalue/((float)pbt[0].value/100f)))/255f;
 
         Color aux = new Color(color,color,color);
         return aux;
@@ -333,29 +314,32 @@ public class TilePlacement : MonoBehaviour
 
     private float CalcNoise(float xCoord, float yCoord, int it){
         float aux = 0f;
-
+        float normalice = 0f;
         for (int i = 0; i < it; i++)
         {
-            aux += Mathf.Pow(2,-i) * Mathf.Clamp(Mathf.PerlinNoise(Mathf.Pow(2,i)*xCoord,Mathf.Pow(2,i)*yCoord),0,1f);
+            aux += Mathf.Pow(2,-i) * Mathf.Clamp01(Mathf.PerlinNoise(Mathf.Pow(2,i)*xCoord+Mathf.Pow(2,i),Mathf.Pow(2,i)*yCoord+Mathf.Pow(2,i)));
+            normalice += Mathf.Pow(2,-i);
         }
-
-        return aux;
+        aux = aux/normalice; //always returns a value between 0 and 1
+        return MathF.Pow(aux,1);
     }
 
     public Toggle[] toggles;
     public Button[] buttons;
     public TMP_Dropdown[] dD;
-    private void InteractuarConModificadores(bool interactuable)
+    public GameObject BiomeMatriz;
+    private void Interactuable(bool interactuable)
     {
-        SetInteractables(wm, interactuable);
-        SetInteractables(pbt, interactuable);
-        SetInteractables(pbo, interactuable);
-        SetInteractables(pbd, interactuable);
-        SetInteractables(toggles, interactuable);
-        SetInteractables(buttons, interactuable);
-        SetInteractables(dD, interactuable);
+        SetInteractablesUI(wm, interactuable);
+        SetInteractablesUI(pbt, interactuable);
+        SetInteractablesUI(pbo, interactuable);
+        SetInteractablesUI(pbd, interactuable);
+        SetInteractablesUI(toggles, interactuable);
+        SetInteractablesUI(buttons, interactuable);
+        SetInteractablesUI(dD, interactuable);
+        BiomeMatriz.GetComponent<BiomesDisplay>().enabled=interactuable;
     }
-    private void SetInteractables(UnityEngine.UI.Selectable[] objects, bool interactuable)
+    private void SetInteractablesUI(UnityEngine.UI.Selectable[] objects, bool interactuable)
     {
         foreach (var obj in objects)
         {
@@ -367,13 +351,15 @@ public class TilePlacement : MonoBehaviour
         wm[1].text = "500";
         wm[2].text = "55";
         wm[3].text = "45";
+        wm[4].text = "4";
+        wm[5].text = "3";
 
-        pbt[0].maxValue = 45;
-        pbt[0].value = 45;
+        pbt[0].maxValue = 25;
+        pbt[0].value = 25;
         pbt[1].maxValue = 3;
         pbt[1].value = 3;
-        pbt[2].maxValue = 22;
-        pbt[2].value = 22;
+        pbt[2].maxValue = 42;
+        pbt[2].value = 42;
         pbt[3].maxValue = 30;
         pbt[3].value = 30;
         pbo[0].value = 5;
@@ -395,39 +381,9 @@ public class TilePlacement : MonoBehaviour
     }
 
     public void MostrarMapas(bool mostrar){
-        tilemap.GetComponent<TilemapRenderer>().enabled = mostrar;
+        terrainmap.GetComponent<TilemapRenderer>().enabled = mostrar;
+        biomemap.GetComponent<TilemapRenderer>().enabled = mostrar;
+        riversmap.GetComponent<TilemapRenderer>().enabled = mostrar;
         objectmap.GetComponent<TilemapRenderer>().enabled = mostrar;
-    }
-
-    public bool clickOnCiudad(Vector3 pos){
-        Vector3Int cellPosition = objectmap.WorldToCell(pos);
-        TileBase aux = objectmap.GetTile(cellPosition);
-        return aux == objetos[0];
-    }
-    private Vector3 guardasposcamara;
-    private float camerasize;
-    public void guardarCamaraPos(){
-        guardasposcamara = camara.transform.position;
-        camerasize = camara.GetComponent<Camera>().orthographicSize;
-        camara.GetComponent<Camera>().orthographicSize = 50f;
-    }
-
-    public void restaurarCamaraPos(){
-        camara.transform.position = guardasposcamara;
-        camara.GetComponent<Camera>().orthographicSize = camerasize;
-    }
-
-    public int getSeedElevation(){
-        return seedElevation;
-    }
-
-    public Vector3 getMapPos(Vector3 pos){
-        return tilemap.WorldToCell(pos);
-    }
-
-    public TileBase getTilePos(Vector3 pos){
-        Vector3Int cellPosition = tilemap.WorldToCell(pos);
-        TileBase aux = tilemap.GetTile(cellPosition);
-        return aux;
     }
 }

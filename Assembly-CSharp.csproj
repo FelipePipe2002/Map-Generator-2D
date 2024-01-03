@@ -67,10 +67,13 @@
     <Compile Include="Assets\Scenes\InputTextModifier.cs" />
     <Compile Include="Assets\Scenes\FPSDisplay.cs" />
     <Compile Include="Assets\Scenes\WorldGenerator.cs" />
-    <Compile Include="Assets\Scenes\CityTile.cs" />
+    <Compile Include="Assets\Scenes\BiomesDisplay.cs" />
     <Compile Include="Assets\Scenes\MapToPNG.cs" />
+    <Compile Include="Assets\Scenes\ShowPanel.cs" />
     <Compile Include="Assets\Scenes\Formulas.cs" />
     <Compile Include="Assets\Scenes\SliderScript.cs" />
+    <Compile Include="Assets\Scenes\TerrainLevelsDisplay.cs" />
+    <Compile Include="Assets\Scenes\awake.cs" />
     <Compile Include="Assets\Scenes\CameraController.cs" />
   </ItemGroup>
   <ItemGroup>
